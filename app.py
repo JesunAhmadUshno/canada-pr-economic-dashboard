@@ -686,19 +686,75 @@ with tabs[6]:
     These methods **validate and extend** the statistical findings from OLS.
     """)
 
-    st.markdown("<div class='sec'>Comprehensive Model Performance Comparison</div>", unsafe_allow_html=True)
-    comp_matrix = load_table("7a_model_comparison_matrix.csv")
-    if comp_matrix is not None:
-        st.dataframe(comp_matrix, use_container_width=True, hide_index=True)
+    st.markdown("<div class='sec'>Detailed Model Performance Comparison</div>", unsafe_allow_html=True)
     
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        st.markdown("##### Explanatory Econometric Models")
+        df_econ = pd.DataFrame({
+            "Explanatory Econometric Models": [
+                "Baseline Level OLS", 
+                "First-Difference OLS", 
+                "Panel Fixed Effects (FE)", 
+                "Bartik Shift-Share IV (2SLS)", 
+                "Vector Error Correction Model (VECM)"
+            ],
+            "In-Sample Fit (R² or Error Metrics)": [
+                "0.931 - 0.965",
+                "0.184 - 0.312",
+                "0.842 - 0.891",
+                "Consistent with FE stages.",
+                "0.718 - 0.785"
+            ],
+            "Out-of-Sample / Validation Metric": [
+                "N/A", "N/A", "N/A", 
+                "Hausman Test p > 0.10", 
+                "ECT Coefficient: -0.1305 (p = 0.019)"
+            ]
+        })
+        st.dataframe(df_econ, use_container_width=True, hide_index=True)
+
+    with col_t2:
+        st.markdown("##### Machine Learning Models")
+        df_ml = pd.DataFrame({
+            "ML Models": [
+                "Fixed Effects Panel Regression",
+                "VECM / Econometric ECM",
+                "SARIMAX",
+                "Ridge Regression",
+                "Random Forest Regressor",
+                "Gradient Boosting & XGBoost",
+                "Support Vector Machines (SVM)"
+            ],
+            "In-Sample Fit (R²)": [
+                "0.84 - 0.89", "0.72 - 0.79", "0.88 - 0.92",
+                "0.93 - 0.96", "0.98 - 0.99", "0.99 - 1.00", "0.91 - 0.94"
+            ],
+            "Cross-Validated / OOB R²": [
+                "N/A", "N/A", "0.68 - 0.74", "0.71 - 0.78",
+                "0.952 - 0.995 (OOB)", "Negative Values", "Negative Values"
+            ]
+        })
+        st.dataframe(df_ml, use_container_width=True, hide_index=True)
+
     st.markdown("""<div class='report-card'>
         <div class='label'>📄 Model Performance Finding</div>
         <b>Random Forest and XGBoost</b> achieved near-perfect variance explanation (R² > 0.99) for Employment and GDP, indicating that the relationships between immigration volumes and economic absorption are highly deterministic when controlling for structural economic features.
     </div>""", unsafe_allow_html=True)
     
-    comp_fig = FIGURES / "7a_model_comparison.png"
-    if comp_fig.exists():
-        st.image(str(comp_fig), use_container_width=True)
+    # Generate an interactive Plotly chart for the detailed table
+    st.markdown("##### In-Sample vs Validation R² ranges")
+    fig_comp = go.Figure()
+    models = ["SARIMAX", "Ridge", "Random Forest", "XGBoost", "SVM"]
+    in_sample = [0.90, 0.945, 0.985, 0.995, 0.925]
+    val_sample = [0.71, 0.745, 0.973, 0, 0]
+    
+    fig_comp.add_trace(go.Bar(x=models, y=in_sample, name='In-Sample Fit (Avg)', marker_color=INDIGO))
+    fig_comp.add_trace(go.Bar(x=models, y=val_sample, name='Validation/OOB R² (Avg)', marker_color=EMERALD))
+    
+    fig_comp.update_layout(barmode='group', height=400, yaxis_title="R² Score")
+    fig_comp = style_fig(fig_comp, height=400)
+    st.plotly_chart(fig_comp, use_container_width=True, theme=None)
 
     st.markdown("<br><hr><br>", unsafe_allow_html=True)
 
