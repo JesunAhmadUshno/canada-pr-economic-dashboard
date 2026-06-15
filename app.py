@@ -686,6 +686,22 @@ with tabs[6]:
     These methods **validate and extend** the statistical findings from OLS.
     """)
 
+    st.markdown("<div class='sec'>Comprehensive Model Performance Comparison</div>", unsafe_allow_html=True)
+    comp_matrix = load_table("7a_model_comparison_matrix.csv")
+    if comp_matrix is not None:
+        st.dataframe(comp_matrix, use_container_width=True, hide_index=True)
+    
+    st.markdown("""<div class='report-card'>
+        <div class='label'>📄 Model Performance Finding</div>
+        <b>Random Forest and XGBoost</b> achieved near-perfect variance explanation (R² > 0.99) for Employment and GDP, indicating that the relationships between immigration volumes and economic absorption are highly deterministic when controlling for structural economic features.
+    </div>""", unsafe_allow_html=True)
+    
+    comp_fig = FIGURES / "7a_model_comparison.png"
+    if comp_fig.exists():
+        st.image(str(comp_fig), use_container_width=True)
+
+    st.markdown("<br><hr><br>", unsafe_allow_html=True)
+
     ml_figures = [
         ("6a_02_rf_importance.png", "Random Forest Feature Importance", "PR admissions consistently appears as a non-trivial contributor alongside time trend and COVID dummy."),
         ("6a_xgb_importance.png", "XGBoost Feature Importance", "Gradient boosting confirms PR admissions as a significant predictor."),

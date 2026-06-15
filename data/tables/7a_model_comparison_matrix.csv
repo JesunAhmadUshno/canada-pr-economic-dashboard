@@ -1,0 +1,5 @@
+Outcome,ElasticNet,Lasso,OLS Multiple,Random Forest,Ridge,SVM (RBF),XGBoost
+Employment,0.9963,0.9963,0.9164,0.9939,0.9963,0.5975,0.9998
+GDP,0.9947,0.9947,0.945,0.992,0.9947,0.0704,0.9997
+Hours Worked,0.9739,0.9776,0.8299,0.939,0.9775,0.0,0.9992
+Unemployment,0.9955,0.9955,0.5854,0.9463,0.9955,1.0,0.9994
